@@ -2,7 +2,7 @@ import logging
 from enum import Enum
 from typing import Any, List, TypeVar, Generic, Union, Dict, Optional
 
-from rbs.common.error import AlreadyExistError
+from rbs_tui_dom.error import AlreadyExistError
 from rbs_tui_dom.event_emitter import EventEmitter
 
 T = TypeVar('T')

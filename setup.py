@@ -6,6 +6,7 @@ from setuptools import setup
 requirements = [
     'colorama',
     "asciimatics",
+    'LatLon',
 ]
 if sys.version_info < (3, 7):
     requirements.append("dataclasses")
@@ -20,7 +21,7 @@ setup(
         "rbs_tui_dom.extra",
     ],
     ext_modules=[],
-    install_requires=['LatLon'],
+    install_requires=requirements,
     extras_require={
         "frontend": [
 
