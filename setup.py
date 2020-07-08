@@ -7,7 +7,6 @@ from os import path
 requirements = [
     'colorama',
     "asciimatics",
-    'LatLon',
 ]
 if sys.version_info < (3, 7):
     requirements.append("dataclasses")

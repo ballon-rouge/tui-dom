@@ -181,7 +181,7 @@ class DOMTextFlex(DOMElement):
                 screen.position[HORIZONTAL] + line_length,
                 screen.position[VERTICAL] + i,
             )
-        self._render_values = self._value
+        self._render_value = self._value
         self._render_full_size = self._desired_size
         super()._render(screen)
 

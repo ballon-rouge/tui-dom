@@ -208,7 +208,7 @@ class DOMStackLayout(DOMLayout):
 
     def move_min(self, orientation: int):
         min_offset = -self._render_full_size[orientation] + self._render_screen.size[orientation]
-        if self._render_screen.offset[orientation] == min_offset:
+        if self._render_screen.offset[orientation] == min_offset or min_offset > 0:
             return
         screen_offset = list(self._render_screen.offset)
         screen_offset[orientation] = min_offset
