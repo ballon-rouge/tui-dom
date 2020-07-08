@@ -7,7 +7,7 @@ from rbs_tui_dom.dom.style import Color, Alignment
 
 ANSI_CSI_RE = re.compile('\001?\033\\[((?:\\d|;)*)([a-zA-Z])\002?')   # Control Sequence Introducer
 ANSI_OSC_RE = re.compile('\001?\033\\]((?:.|;)*?)(\x07)\002?')        # Operating System Command
-
+INVALID_CHAR_RE = re.compile(r'([\r\n])')
 
 def strip_ansi(value: str):
     cursor = 0
@@ -26,7 +26,9 @@ def strip_ansi(value: str):
         parts.append(value[cursor:start])
         cursor = end
     parts.append(value[cursor:])
-    return "".join(parts)
+    value = "".join(parts)
+    value = INVALID_CHAR_RE.sub("", value)
+    return value
 
 
 class DOMText(DOMElement):
