@@ -1,8 +1,32 @@
+import re
 from typing import Union, List, Set, Optional
 
 from rbs_tui_dom.dom import DOMSize, DOMScreen, DOMElement, HORIZONTAL, VERTICAL, DOMStyle, \
     DOMEvent, DOMInputKey
 from rbs_tui_dom.dom.style import Color, Alignment
+
+ANSI_CSI_RE = re.compile('\001?\033\\[((?:\\d|;)*)([a-zA-Z])\002?')   # Control Sequence Introducer
+ANSI_OSC_RE = re.compile('\001?\033\\]((?:.|;)*?)(\x07)\002?')        # Operating System Command
+
+
+def strip_ansi(value: str):
+    cursor = 0
+    parts = []
+    for match in ANSI_OSC_RE.finditer(value):
+        start, end = match.span()
+        parts.append(value[cursor:start])
+        cursor = end
+    parts.append(value[cursor:])
+    value = "".join(parts)
+
+    cursor = 0
+    parts = []
+    for match in ANSI_CSI_RE.finditer(value):
+        start, end = match.span()
+        parts.append(value[cursor:start])
+        cursor = end
+    parts.append(value[cursor:])
+    return "".join(parts)
 
 
 class DOMText(DOMElement):
@@ -13,12 +37,14 @@ class DOMText(DOMElement):
         classnames: Set[str] = None,
         style: DOMStyle=DOMStyle(),
     ):
-        self.values: List[str] = value if isinstance(value, list) else [value]
+        values: List[str] = value if isinstance(value, list) else [value]
+        self.values = [strip_ansi(v) for v in values]
         self._render_values = None
         super().__init__(id=id, style=style, classnames=classnames)
 
     def set_value(self, value: Union[List[str], str]) -> 'DOMText':
         new_values = value if isinstance(value, list) else [value]
+        new_values = [strip_ansi(v) for v in new_values]
         resize = [True, True]
         if self.values is not None:
             if len(new_values) == len(self.values):
@@ -116,7 +142,7 @@ class DOMTextFlex(DOMElement):
             style: DOMStyle=DOMStyle(),
     ):
         super().__init__(id=id, style=style, classnames=classnames)
-        self._value = value
+        self._value = strip_ansi(value)
         self._render_value: Optional[str] = None
         self._static_prefix_length = 0
 
@@ -124,7 +150,7 @@ class DOMTextFlex(DOMElement):
         return self._value
 
     def set_value(self, value: str):
-        self._value = value
+        self._value = strip_ansi(value)
         self._rerender(resize=(False, True))
 
     def _should_render(self, screen: DOMScreen, force: bool=False) -> bool:
