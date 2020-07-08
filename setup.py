@@ -20,10 +20,6 @@ setup(
         "rbs_tui_dom.extra",
     ],
     ext_modules=[],
-    install_requires=['LatLon'],
-    extras_require={
-        "frontend": [
-
-        ],
-    }
+    install_requires=requirements,
+    extras_require={}
 )
